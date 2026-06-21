@@ -91,7 +91,7 @@ router.post('/predict', async (req, res) => {
                         branchCode: "$strBranchCode" 
                     },
                     roundsData: {
-                        $push: { round: "$round", percentile: "$numericPercentile", rank: "$rank", year: "$year" }
+                        $push: { round: "$round", percentile: "$numericPercentile", category: "$category", rank: "$rank", year: "$year" }
                     },
                     rawBranchName: { $first: "$branchName" }
                 }
