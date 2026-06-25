@@ -1,12 +1,7 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  // Google details we get automatically after verified login
-  googleId: {
-    type: String,
-    required: true,
-    unique: true // 🛡️ Taaki pure database mein ek bande ki ek hi core entry ho
-  },
+  // Core Identifiers
   name: {
     type: String,
     required: true
@@ -17,19 +12,62 @@ const userSchema = new mongoose.Schema({
     unique: true
   },
   avatar: {
-    type: String // Optional: Google profile photo string save karne ke liye
+    type: String
   },
 
-  // 🎯 PROFILE-LOCK PARAMETERS (Jo onboarding par save honge)
+  // 🔓 OAUTH IDENTITY LAYER
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+
+  // 🔑 LOCAL REGISTRATION SECURE FIELDS
+  password: {
+    type: String,
+    required: function() { return !this.googleId; }
+  },
+
+  // 🎯 ENTERPRISE OTP VERIFICATION CHANNEL
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  otpCode: {
+    type: String,
+    default: null
+  },
+  otpExpires: {
+    type: Date,
+    default: null
+  },
+
+  // 👤 NEW: EXTENDED PROFILE ATTRIBUTES (ONBOARDING)
+  mobileNumber: {
+    type: String,
+    default: null
+  },
+  district: {
+    type: String,
+    default: null
+  },
+
+  // 📊 MHT-CET METRICS
   percentile: {
     type: Number,
-    default: null // Starting mein null rahega jab tak bacha input na kare
+    default: null
   },
   category: {
     type: String,
-    default: 'GOPENS' // Default mapping target category
+    default: 'GOPENS'
   },
   
+  // ⚙️ ONBOARDING STATUS TRACKING
+  isOnboarded: {
+    type: Boolean,
+    default: false // Jab tak bacha dono steps complete nahi karega, yeh false rahega
+  },
+
   createdAt: {
     type: Date,
     default: Date.now
